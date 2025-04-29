@@ -10,9 +10,9 @@ const generateToken = (userId) => {
 
 exports.signup = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const userData = req.body;
 
-    const user = await User.create({ username, email, password });
+    const user = await User.create(userData);
     // Generate Token
     const token = generateToken(user._id);
 

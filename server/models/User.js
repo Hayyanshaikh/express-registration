@@ -2,10 +2,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
-  username: {
+  name: {
     type: String,
-    required: true,
-    unique: true,
   },
   password: {
     type: String,
@@ -19,9 +17,31 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["user", "admin"],
-    default: "user",
-    required: [true, "Please select a role Admin or User"],
+    enum: ["STUDENT", "INSTRUCTOR", "ADMIN"],
+    required: [true, "Please select a role."],
+  },
+  verifiedInstructor: {
+    type: Boolean,
+    default: false,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+userSchema.set("toJSON", {
+  virtuals: true,
+  transform: function (_, ret) {
+    if (ret._id) {
+      ret.id = ret._id;
+      delete ret._id;
+    }
+
+    // Optionally remove __v
+    delete ret.__v;
+
+    return ret;
   },
 });
 

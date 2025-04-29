@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const Course = require("../models/Course");
+const Enrollment = require("../models/Enrollment");
 
 exports.findAllUsers = async (req, res) => {
   try {
@@ -64,6 +66,15 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
     const id = req.params.id;
+
+    const hasCourse = await Course.exists({ instructorId: id });
+    const hasEnroll = await Enrollment.exists({ userId: id });
+
+    if (hasCourse || hasEnroll) {
+      return res
+        .status(400)
+        .json({ message: "User cannot be deleted because they have courses" });
+    }
 
     const user = await User.findOneAndDelete({ _id: id });
 

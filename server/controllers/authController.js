@@ -19,9 +19,7 @@ exports.signup = async (req, res) => {
     res.status(201).json({
       status: "success",
       token,
-      data: {
-        user,
-      },
+      data: user,
     });
   } catch (error) {
     res.status(400).json({
@@ -33,20 +31,20 @@ exports.signup = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { email, password, role } = req.body;
 
     // Validate input
-    if (!username || !password) {
-      return res
-        .status(400)
-        .json({ message: "Username and password are required" });
+    if (!email || !password || !role) {
+      return res.status(400).json({
+        message: "Username, password, and role are required",
+      });
     }
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email, role });
 
     // Check password
     if (!user || !(await user.matchPassword(password))) {
-      return res.status(401).json({ message: "Invalid username or password" });
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     // Generate JWT token

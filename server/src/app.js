@@ -2,8 +2,16 @@ const express = require("express");
 const app = express();
 const connectDB = require("../config/db");
 const getAllRoutes = require("../all_routes/routes");
+const cors = require("cors");
 
 connectDB();
+
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    credentials: true,
+  })
+);
 
 // Middleware
 app.use(express.json());

@@ -44,13 +44,16 @@ exports.login = async (req, res) => {
 
     // Check password
     if (!user || !(await user.matchPassword(password))) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res
+        .status(401)
+        .json({ status: "error", message: "Invalid email or password" });
     }
 
     // Generate JWT token
     const token = generateToken(user._id);
     res.status(200).json({
       status: "success",
+      message: "Login Successfully",
       token,
       data: user,
     });

@@ -1,4 +1,5 @@
 const Question = require("../models/Question");
+const Answer = require("../models/Answer");
 
 exports.createQuestion = async (req, res) => {
   try {
@@ -85,6 +86,15 @@ exports.updateQuestion = async (req, res) => {
 exports.deleteQuestion = async (req, res) => {
   try {
     const id = req.params.id;
+
+    const hasAnswer = await Answer.exists({ questionId: id });
+    if (hasAnswer) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "Cannot delete this record because it is referenced in another module",
+      });
+    }
 
     const question = await Question.findOneAndDelete({ _id: id });
 

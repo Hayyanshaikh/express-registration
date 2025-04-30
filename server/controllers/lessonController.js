@@ -82,6 +82,15 @@ exports.deleteLesson = async (req, res) => {
   try {
     const id = req.params.id;
 
+    const hasQuiz = await Quiz.exists({ lessonId: id });
+    if (hasQuiz) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "Cannot delete this record because it is referenced in another module",
+      });
+    }
+
     const lesson = await Lesson.findOneAndDelete({ _id: id });
 
     if (!lesson) {

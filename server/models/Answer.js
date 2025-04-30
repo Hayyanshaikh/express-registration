@@ -1,18 +1,17 @@
 const mongoose = require("mongoose");
 
-const questionSchema = new mongoose.Schema({
-  quizId: {
+const answerSchema = new mongoose.Schema({
+  questionId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Quiz",
+    ref: "Question",
     required: true,
   },
-  question: {
+  answer: {
     type: String,
     required: true,
   },
-  type: {
-    type: String,
-    enum: ["MULTIPLE_CHOICE", "TRUE_FALSE"],
+  isCorrect: {
+    type: Boolean,
     required: true,
   },
   createdAt: {
@@ -21,7 +20,7 @@ const questionSchema = new mongoose.Schema({
   },
 });
 
-questionSchema.set("toJSON", {
+answerSchema.set("toJSON", {
   virtuals: true,
   transform: function (_, ret) {
     if (ret._id) {
@@ -29,9 +28,9 @@ questionSchema.set("toJSON", {
       delete ret._id;
     }
 
-    if (ret.quizId) {
-      ret.quiz = ret.quizId;
-      delete ret.quizId;
+    if (ret.questionId) {
+      ret.question = ret.questionId;
+      delete ret.questionId;
     }
     // Optionally remove __v
     delete ret.__v;
@@ -40,4 +39,4 @@ questionSchema.set("toJSON", {
   },
 });
 
-module.exports = mongoose.model("Question", questionSchema);
+module.exports = mongoose.model("Answer", answerSchema);

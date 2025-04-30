@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Course = require("../models/Course");
 const Enrollment = require("../models/Enrollment");
+const Submission = require("../models/Submission");
 
 exports.findAllUsers = async (req, res) => {
   try {
@@ -69,11 +70,14 @@ exports.deleteUser = async (req, res) => {
 
     const hasCourse = await Course.exists({ instructorId: id });
     const hasEnroll = await Enrollment.exists({ userId: id });
+    const hasSubmission = await Submission.exists({ userId: id });
 
-    if (hasCourse || hasEnroll) {
-      return res
-        .status(400)
-        .json({ message: "User cannot be deleted because they have courses" });
+    if (hasCourse || hasEnroll || hasSubmission) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "Cannot delete this record because it is referenced in another module",
+      });
     }
 
     const user = await User.findOneAndDelete({ _id: id });

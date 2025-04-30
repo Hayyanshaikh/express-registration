@@ -1,4 +1,6 @@
 const Quiz = require("../models/Quiz");
+const Question = require("../models/Question");
+const Submission = require("../models/Submission");
 
 exports.createQuiz = async (req, res) => {
   try {
@@ -33,6 +35,17 @@ exports.findAllQuizzes = async (req, res) => {
 exports.deleteQuiz = async (req, res) => {
   try {
     const id = req.params.id;
+
+    const hasQuestion = await Question.exists({ quizId: id });
+    const hasSubmission = await Submission.exists({ quizId: id });
+    if (hasQuestion || hasSubmission) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "Cannot delete this record because it is referenced in another module",
+      });
+    }
+
     const quiz = await Quiz.findOneAndDelete({ _id: id });
 
     if (!quiz) {

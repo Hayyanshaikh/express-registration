@@ -6,6 +6,9 @@ const enrollmentRoutes = require("../routes/enrollmentRoute");
 const lessonRoutes = require("../routes/lessonRoute");
 const quizRoutes = require("../routes/quizRoute");
 const questionRoutes = require("../routes/questionRoute");
+const answerRoutes = require("../routes/answerRoute");
+const submissionRoutes = require("../routes/submissionRoute");
+const subAnswerRoutes = require("../routes/subAnswerRoute");
 const fileRoutes = require("../routes/fileRoute");
 
 const getAllRoutes = (app) => {
@@ -17,6 +20,9 @@ const getAllRoutes = (app) => {
   app.use("/api/lessons", lessonRoutes);
   app.use("/api/quizzes", quizRoutes);
   app.use("/api/questions", questionRoutes);
+  app.use("/api/answers", answerRoutes);
+  app.use("/api/submissions", submissionRoutes);
+  app.use("/api/submission-answers", subAnswerRoutes);
   app.use("/api", fileRoutes);
 };
 

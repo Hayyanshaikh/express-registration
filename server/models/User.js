@@ -38,6 +38,8 @@ userSchema.set("toJSON", {
       delete ret._id;
     }
 
+    delete ret.password;
+
     // Optionally remove __v
     delete ret.__v;
 

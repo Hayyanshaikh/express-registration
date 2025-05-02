@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const handleDuplicateError = require("../utils/errorHandlers/duplicateError");
+const handleValidationError = require("../utils/errorHandlers/validationError");
 
 // Token generator function
 const generateToken = (userId) => {
@@ -13,19 +15,25 @@ exports.signup = async (req, res) => {
     const userData = req.body;
 
     const user = await User.create(userData);
-    // Generate Token
-    const token = generateToken(user._id);
 
     res.status(201).json({
       status: "success",
-      token,
       data: user,
+      message: "Signup successful.",
     });
   } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      message: error.message,
-    });
+    const duplicate = handleDuplicateError(error, "Email");
+    const validate = handleValidationError(error);
+
+    const errorResponse = duplicate || validate;
+
+    if (errorResponse) {
+      return res
+        .status(400)
+        .json({ status: "error", message: errorResponse.message });
+    }
+
+    res.status(500).json({ status: "error", message: "Internal server error" });
   }
 };
 
@@ -43,7 +51,7 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email, role });
 
     // Check password
-    if (!user || !(await user.matchPassword(password)) || role) {
+    if (!user || !(await user.matchPassword(password))) {
       return res
         .status(401)
         .json({ status: "error", message: "Invalid email or password" });

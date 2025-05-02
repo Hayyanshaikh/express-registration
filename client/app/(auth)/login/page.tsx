@@ -8,9 +8,9 @@ import { Label } from "@radix-ui/react-label";
 import Link from "next/link";
 import CommonSelect from "@/app/component/common/CommonSelect";
 import { handleInputChange } from "@/app/lib/constant";
-import { useLogin } from "@/app/api/api";
 import CommonModal, { ModalStatus } from "@/app/component/common/CommonModal";
 import Cookies from "js-cookie";
+import { useControllerLogin } from "@/app/api/api";
 
 const Login = () => {
   // Dynamic form state initialization
@@ -37,7 +37,7 @@ const Login = () => {
 
   // Handle form submission
   const onSubmit = () => {
-    useLogin(form)
+    useControllerLogin(form)
       .then((res) => {
         Cookies.set("token", res.token);
         setModalMessage({
@@ -108,7 +108,10 @@ const Login = () => {
       <CommonModal
         isOpen={isOpen}
         onOpenChange={setIsOpen}
-        title={`Login ${modalMessage?.status}`}
+        title={`Login ${
+          modalMessage?.status?.charAt(0).toUpperCase() +
+          modalMessage?.status?.slice(1)
+        }`}
         variant={modalMessage?.status}
         footer={
           <Button className="cursor-pointer" onClick={() => setIsOpen(false)}>

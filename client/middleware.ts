@@ -1,10 +1,13 @@
 // middleware.js
 import { NextResponse } from "next/server";
+import Cookies from "js-cookie";
 
 export function middleware(request) {
-  const token = request.cookies.get("token");
+  const token = Cookies.get("token");
+  const path = request.nextUrl.pathname;
 
-  if (!token && request.nextUrl.pathname !== "/login") {
+  // Allow access to login and signup routes
+  if (!token && path !== "/login" && path !== "/signup") {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -12,5 +15,5 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/((?!_next|favicon.ico).*)"], // har route pe chalega except static files
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };

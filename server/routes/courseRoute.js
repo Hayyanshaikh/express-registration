@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const courseController = require("../controllers/courseController");
+const { verifyToken } = require("../controllers/authController");
 
 router.get("/", courseController?.findAllCourses);
 router.post("/", courseController?.createCourse);

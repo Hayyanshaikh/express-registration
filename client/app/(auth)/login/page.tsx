@@ -10,6 +10,7 @@ import CommonSelect from "@/app/component/common/CommonSelect";
 import { handleInputChange } from "@/app/lib/constant";
 import { useLogin } from "@/app/api/api";
 import CommonModal, { ModalStatus } from "@/app/component/common/CommonModal";
+import Cookies from "js-cookie";
 
 const Login = () => {
   // Dynamic form state initialization
@@ -38,7 +39,7 @@ const Login = () => {
   const onSubmit = () => {
     useLogin(form)
       .then((res) => {
-        localStorage.setItem("token", res.token);
+        Cookies.set("token", res.token);
         setModalMessage({
           status: res?.status,
           message: res?.message,

@@ -43,7 +43,7 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email, role });
 
     // Check password
-    if (!user || !(await user.matchPassword(password))) {
+    if (!user || !(await user.matchPassword(password)) || role) {
       return res
         .status(401)
         .json({ status: "error", message: "Invalid email or password" });
@@ -61,4 +61,17 @@ exports.login = async (req, res) => {
     console.error("Error during login:", error);
     res.status(500).json({ message: "Internal server error" });
   }
+};
+
+exports.verifyToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) return res.status(401).json({ message: "Token required" });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: "Token invalid" });
+    req.user = user;
+    next();
+  });
 };

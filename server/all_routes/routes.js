@@ -9,6 +9,7 @@ const questionRoutes = require("../routes/questionRoute");
 const answerRoutes = require("../routes/answerRoute");
 const submissionRoutes = require("../routes/submissionRoute");
 const subAnswerRoutes = require("../routes/subAnswerRoute");
+const menuRoutes = require("../routes/menuRoute");
 const fileRoutes = require("../routes/fileRoute");
 
 const getAllRoutes = (app) => {
@@ -23,6 +24,7 @@ const getAllRoutes = (app) => {
   app.use("/api/answers", answerRoutes);
   app.use("/api/submissions", submissionRoutes);
   app.use("/api/submission-answers", subAnswerRoutes);
+  app.use("/api/menus", menuRoutes);
   app.use("/api", fileRoutes);
 };
 

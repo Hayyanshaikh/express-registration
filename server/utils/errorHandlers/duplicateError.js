@@ -1,5 +1,3 @@
-// utils/errorHandlers/duplicateError.js
-
 const handleDuplicateError = (err, field) => {
   if (err.code === 11000) {
     return {

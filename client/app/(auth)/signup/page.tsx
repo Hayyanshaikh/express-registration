@@ -3,41 +3,35 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import AuthFormLayout from "@/app/component/layout/AuthFormLayout";
-import { Button } from "@/components/ui/button";
 import { Label } from "@radix-ui/react-label";
 import Link from "next/link";
 import CommonSelect from "@/app/component/common/CommonSelect";
-import { handleInputChange } from "@/app/lib/constant";
-import CommonModal, { ModalStatus } from "@/app/component/common/CommonModal";
-import Cookies from "js-cookie";
+import { handleInputChange, USER_ROLE_OPTIONS } from "@/app/lib/constant";
+import CommonModal from "@/app/component/common/CommonModal";
 import { useControllerSignup } from "@/app/api/api";
+import CommonButton from "@/app/component/common/CommonButton";
+import { ModalMessageState } from "@/app/types";
+import { Login } from "@/app/api/types";
 
 const Signup = () => {
   // Dynamic form state initialization
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<Login>({
+    name: "",
     role: "STUDENT",
     email: "",
     password: "",
   });
   const [isOpen, setIsOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState<{
-    message: string;
-    status: ModalStatus;
-  }>({
+  const [modalMessage, setModalMessage] = useState<ModalMessageState>({
     message: "",
     status: "success",
   });
 
-  // Options for the role selection
-  const options = [
-    { label: "Student", value: "STUDENT" },
-    { label: "Instructor", value: "INSTRUCTOR" },
-    { label: "Admin", value: "ADMIN" },
-  ];
+  const { mutateAsync: signup } = useControllerSignup();
 
   // Handle form submission
   const onSubmit = () => {
-    useControllerSignup(form)
+    signup(form)
       .then((res) => {
         setModalMessage({
           status: res?.status,
@@ -47,8 +41,8 @@ const Signup = () => {
       })
       .catch((err) => {
         setModalMessage({
-          status: err?.status,
-          message: err?.message,
+          status: err?.response?.data?.status,
+          message: err?.response?.data?.message,
         });
         setIsOpen(true);
       });
@@ -57,6 +51,15 @@ const Signup = () => {
   return (
     <>
       <AuthFormLayout onSubmit={onSubmit} title="Signup">
+        <Input
+          required
+          type="text"
+          name="name"
+          value={form.name}
+          placeholder="Name"
+          className="shadow-none rounded"
+          onChange={(e) => handleInputChange(e, setForm)}
+        />
         <Input
           required
           type="text"
@@ -76,7 +79,7 @@ const Signup = () => {
           onChange={(e) => handleInputChange(e, setForm)}
         />
         <CommonSelect
-          items={options}
+          items={USER_ROLE_OPTIONS}
           defaultValue={form.role}
           placeholder="Select Role"
           onChange={(value) => setForm({ ...form, role: value })}
@@ -90,33 +93,26 @@ const Signup = () => {
             Remember me
           </label>
         </div>
-        <Button className="w-full cursor-pointer mt-2">Signup</Button>
+        <CommonButton type="submit" className="w-full cursor-pointer mt-2">
+          Signup
+        </CommonButton>
 
         <Label className="text-xs text-center w-full flex gap-1 items-center justify-center">
           Already have account?
-          <Button
-            asChild
-            className="p-0 leading-normal h-auto text-xs"
+          <CommonButton
             variant="link"
+            className="p-0 leading-normal h-auto text-xs"
           >
             <Link href="/login">Login</Link>
-          </Button>
+          </CommonButton>
         </Label>
       </AuthFormLayout>
 
       <CommonModal
         isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        title={`Signup ${
-          modalMessage?.status?.charAt(0).toUpperCase() +
-          modalMessage?.status?.slice(1)
-        }`}
+        setIsOpen={setIsOpen}
+        title={`Signup ${modalMessage?.status}`}
         variant={modalMessage?.status}
-        footer={
-          <Button className="cursor-pointer" onClick={() => setIsOpen(false)}>
-            Ok
-          </Button>
-        }
       >
         <p className="text-gray-500">{modalMessage?.message}</p>
       </CommonModal>

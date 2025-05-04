@@ -15,11 +15,12 @@ import Link from "next/link";
 
 type Props = {
   menuData: SimpleMenuGroup[];
+  className?: string;
 };
 
-const CommonMenu = ({ menuData }: Props) => {
+const CommonMenu = ({ menuData, className }: Props) => {
   return (
-    <Menubar className="p-0 shadow-none border-none h-auto">
+    <Menubar className={`${className} p-0 shadow-none border-none h-auto`}>
       {menuData?.length > 0 &&
         menuData?.map((group) => (
           <MenubarMenu key={group.trigger}>

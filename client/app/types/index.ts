@@ -24,3 +24,29 @@ export type SimpleMenuGroup = {
   link?: string;
   items?: SimpleMenuItem[];
 };
+
+export type SubHeaderProps = {
+  heading: string;
+  addUrl?: string;
+  closeUrl?: string;
+  addLabel?: string;
+  closeLabel?: string;
+  showAddButton?: boolean;
+  showCloseButton?: boolean;
+  customActions?: React.ReactNode;
+};
+
+export type Column = {
+  key: string;
+  width?: string;
+  label: string;
+  render?: (row: any) => React.ReactNode;
+};
+
+export type CommonTableProps = {
+  placeholder?: string;
+  columns: Column[];
+  data: any[];
+  emptyMessage?: string;
+  searchColumns?: string[];
+};

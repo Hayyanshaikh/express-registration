@@ -1,7 +1,7 @@
 // app/hooks/useMenuManipulator.ts
 import { SimpleMenuGroup, SimpleMenuItem } from "../types";
 
-const useMenuManipulator = (
+export const useMenuManipulator = (
   list: SimpleMenuItem[] | null
 ): SimpleMenuGroup[] => {
   if (!list) return [];
@@ -30,4 +30,17 @@ const useMenuManipulator = (
   return data;
 };
 
-export default useMenuManipulator;
+export const useAllMenuManipulator = (list: any[]) => {
+  if (!list) return [];
+
+  const data = list.map((item) => {
+    return {
+      id: item?.id || "",
+      name: item.label || "-",
+      permission: item?.permissions || [],
+      parent: item?.parent?.label || "-",
+    };
+  });
+
+  return data;
+};

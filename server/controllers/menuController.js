@@ -1,4 +1,5 @@
 const Menu = require("../models/Menu"); // Import the Menu model
+const mongoose = require("mongoose");
 
 // Create a new menu item
 exports.createMenu = async (req, res) => {
@@ -21,6 +22,31 @@ exports.createMenu = async (req, res) => {
     res.status(500).json({
       status: "error",
       message: "Internal server error while creating menu.",
+    });
+  }
+};
+
+exports.getAllMenusWithPermissions = async (req, res) => {
+  try {
+    const menus = await Menu.find({}).populate({ path: "parentId" });
+
+    if (!menus.length) {
+      return res.status(404).json({
+        status: "error",
+        message: "No menus found.",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: menus,
+      message: "All menus with permissions fetched successfully.",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Error fetching all menus.",
     });
   }
 };
@@ -102,7 +128,15 @@ exports.deleteMenu = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Find the menu item and delete it
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        status: "error",
+        message: "Invalid menu ID.",
+      });
+    }
+
+    // Delete the menu
     const deletedMenu = await Menu.findByIdAndDelete(id);
 
     if (!deletedMenu) {
@@ -114,14 +148,13 @@ exports.deleteMenu = async (req, res) => {
 
     res.status(200).json({
       status: "success",
-      data: deletedMenu,
       message: "Menu deleted successfully.",
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: "error",
-      message: "Error deleting menu.",
+      message: error?.message || "Internal server error.",
     });
   }
 };

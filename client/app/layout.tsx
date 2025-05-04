@@ -25,7 +25,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${geist.variable} antialiased`}>
           <HeaderWrapper />
-          {children}
+          <div className="container mx-auto px-3 py-10">{children}</div>
         </body>
       </html>
     </QueryProvider>

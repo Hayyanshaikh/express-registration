@@ -1,9 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import AuthFormLayout from "@/app/component/layout/AuthFormLayout";
-import { Label } from "@radix-ui/react-label";
 import Link from "next/link";
 import CommonSelect from "@/app/component/common/CommonSelect";
 import { handleInputChange, USER_ROLE_OPTIONS } from "@/app/lib/constant";
@@ -12,6 +9,9 @@ import { useControllerSignup } from "@/app/api/api";
 import CommonButton from "@/app/component/common/CommonButton";
 import { ModalMessageState } from "@/app/types";
 import { Login } from "@/app/api/types";
+import CommonInput from "@/app/component/common/CommonInput";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 const Signup = () => {
   // Dynamic form state initialization
@@ -51,31 +51,26 @@ const Signup = () => {
   return (
     <>
       <AuthFormLayout onSubmit={onSubmit} title="Signup">
-        <Input
-          required
-          type="text"
+        <CommonInput
           name="name"
           value={form.name}
           placeholder="Name"
-          className="shadow-none rounded"
+          required
           onChange={(e) => handleInputChange(e, setForm)}
         />
-        <Input
-          required
-          type="text"
+        <CommonInput
           name="email"
           value={form.email}
           placeholder="Email"
-          className="shadow-none rounded"
+          required
           onChange={(e) => handleInputChange(e, setForm)}
         />
-        <Input
-          required
-          type="password"
+        <CommonInput
           name="password"
           value={form.password}
           placeholder="Password"
-          className="shadow-none rounded"
+          type="password"
+          required
           onChange={(e) => handleInputChange(e, setForm)}
         />
         <CommonSelect
@@ -88,7 +83,7 @@ const Signup = () => {
           <Checkbox id="terms" className="cursor-pointer" />
           <label
             htmlFor="terms"
-            className="user-select-none text-xs cursor-pointer font-medium text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="user-select-none text-xs cursor-pointer font-medium text-gray-600 leading-none"
           >
             Remember me
           </label>

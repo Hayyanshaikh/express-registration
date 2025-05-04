@@ -1,9 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import AuthFormLayout from "@/app/component/layout/AuthFormLayout";
-import { Label } from "@radix-ui/react-label";
 import Link from "next/link";
 import CommonSelect from "@/app/component/common/CommonSelect";
 import { handleInputChange, USER_ROLE_OPTIONS } from "@/app/lib/constant";
@@ -13,6 +10,9 @@ import { useControllerLogin } from "@/app/api/api";
 import { useRouter } from "next/navigation";
 import CommonButton from "@/app/component/common/CommonButton";
 import { ModalMessageState } from "@/app/types";
+import CommonInput from "@/app/component/common/CommonInput";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 const Login = () => {
   const router = useRouter();
@@ -21,7 +21,7 @@ const Login = () => {
     message: "",
     status: "success",
   });
-  // Dynamic form state initialization
+
   const [form, setForm] = useState({
     role: "STUDENT",
     email: "",
@@ -30,13 +30,11 @@ const Login = () => {
 
   const { mutateAsync: login } = useControllerLogin();
 
-  // Handle form submission
   const onSubmit = () => {
     login(form)
       .then((res) => {
         Cookies.set("token", res.token);
         Cookies.set("user", JSON.stringify(res.data));
-
         router.push("/");
       })
       .catch((err) => {
@@ -51,22 +49,20 @@ const Login = () => {
   return (
     <>
       <AuthFormLayout onSubmit={onSubmit} title="Login">
-        <Input
-          required
-          type="text"
+        <CommonInput
           name="email"
+          type="text"
           value={form.email}
           placeholder="Email"
-          className="shadow-none rounded"
+          required
           onChange={(e) => handleInputChange(e, setForm)}
         />
-        <Input
-          required
-          type="password"
+        <CommonInput
           name="password"
+          type="password"
           value={form.password}
           placeholder="Password"
-          className="shadow-none rounded"
+          required
           onChange={(e) => handleInputChange(e, setForm)}
         />
         <CommonSelect
@@ -76,10 +72,10 @@ const Login = () => {
           onChange={(value) => setForm({ ...form, role: value })}
         />
         <div className="flex items-center space-x-2 cursor-pointer">
-          <Checkbox id="terms" className="cursor-pointer" />
+          <Checkbox id="remember" className="cursor-pointer" />
           <label
-            htmlFor="terms"
-            className="user-select-none text-xs cursor-pointer font-medium text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            htmlFor="remember"
+            className="text-xs cursor-pointer font-medium text-gray-600 leading-none"
           >
             Remember me
           </label>
@@ -89,7 +85,7 @@ const Login = () => {
         </CommonButton>
 
         <Label className="text-xs text-center w-full flex gap-1 items-center justify-center">
-          Don't you have an account?
+          Don&apos;t you have an account?
           <CommonButton
             variant="link"
             className="p-0 leading-normal h-auto text-xs"

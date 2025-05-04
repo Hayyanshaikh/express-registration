@@ -26,10 +26,21 @@ const fetchCourses = async () => {
   return response.data;
 };
 
-// API call to fetch courses
 // API call to fetch menus with role
 const fetchMenus = async (role: string) => {
   const response = await axiosInstance.get(`${MenuEndpoint}/${role}`);
+  return response.data;
+};
+
+// API call to fetch courses
+const fetchAllMenus = async () => {
+  const response = await axiosInstance.get(MenuEndpoint);
+  return response.data;
+};
+
+// API call to fetch menus with role
+const deleteMenu = async (id: string) => {
+  const response = await axiosInstance.delete(`${MenuEndpoint}/${id}`);
   return response.data;
 };
 
@@ -52,9 +63,23 @@ export const useControllerFindAllCourses = () => {
 };
 
 // React Query hook: Fetch Menus
-export const useControllerFindAllMenus = (role: string) => {
+export const useControllerFindAllMenusByRole = (role: string) => {
   return useQuery({
     queryKey: ["menus", role], // We add role to queryKey to refetch when role changes
     queryFn: () => fetchMenus(role), // Pass role to fetchMenus function
+  });
+};
+
+// React Query hook: Fetch Menus
+export const useControllerFindAllMenus = () => {
+  return useQuery({
+    queryKey: ["menus"], // We add role to queryKey to refetch when role changes
+    queryFn: () => fetchAllMenus(), // Pass role to fetchMenus function
+  });
+};
+
+export const useControllerDeleteMenu = () => {
+  return useMutation({
+    mutationFn: (id: string) => deleteMenu(id),
   });
 };
